@@ -11,7 +11,7 @@ const handler = async (
         catgory: {
           contains: "live"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.youtube.findMany({
@@ -19,7 +19,7 @@ const handler = async (
         catgory: {
           contains: "live"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.duckduckgo.findMany({
@@ -27,7 +27,7 @@ const handler = async (
         category: {
           contains: "live"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
   ]);

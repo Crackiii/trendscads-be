@@ -11,7 +11,7 @@ export const gamingHandler = async (
         catgory: {
           contains: "gaming"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.youtube.findMany({
@@ -19,7 +19,7 @@ export const gamingHandler = async (
         catgory: {
           contains: "gaming"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.duckduckgo.findMany({
@@ -27,7 +27,7 @@ export const gamingHandler = async (
         category: {
           contains: "gaming"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
   ]);

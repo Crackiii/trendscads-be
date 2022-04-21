@@ -11,7 +11,7 @@ export const healthHandler = async (
         catgory: {
           contains: "health"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.youtube.findMany({
@@ -19,7 +19,7 @@ export const healthHandler = async (
         catgory: {
           contains: "health"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.duckduckgo.findMany({
@@ -27,7 +27,7 @@ export const healthHandler = async (
         category: {
           contains: "health"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
   ]);

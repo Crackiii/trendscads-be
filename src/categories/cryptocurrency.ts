@@ -11,7 +11,7 @@ export const cryptocurrencyHandler = async (
         catgory: {
           contains: "cryptocurrency"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.youtube.findMany({
@@ -19,7 +19,7 @@ export const cryptocurrencyHandler = async (
         catgory: {
           contains: "cryptocurrency"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.duckduckgo.findMany({
@@ -27,7 +27,7 @@ export const cryptocurrencyHandler = async (
         category: {
           contains: "cryptocurrency"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
   ]);

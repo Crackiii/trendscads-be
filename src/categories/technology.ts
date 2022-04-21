@@ -12,7 +12,7 @@ export const technologyHandler = async (
         catgory: {
           contains: "technology"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.youtube.findMany({
@@ -20,7 +20,7 @@ export const technologyHandler = async (
         catgory: {
           contains: "technology"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.duckduckgo.findMany({
@@ -28,7 +28,7 @@ export const technologyHandler = async (
         category: {
           contains: "technology"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
   ]);

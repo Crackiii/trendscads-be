@@ -12,7 +12,7 @@ export const travelHandler = async (
         catgory: {
           contains: "travel"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.youtube.findMany({
@@ -20,7 +20,7 @@ export const travelHandler = async (
         catgory: {
           contains: "travel"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
     prisma.duckduckgo.findMany({
@@ -28,7 +28,7 @@ export const travelHandler = async (
         category: {
           contains: "travel"
         },
-        country: req.query.country ? String(req.query.country) : 'US'
+        country: req.query.country ? String(req.query.country) : "US"
       }
     }),
   ]);
