@@ -12,7 +12,7 @@ app.use(function (_: any, res: { setHeader: (arg0: string, arg1: string) => void
 });
 
 
-app.get("/", (_, res) => res.status(200).send("<h1>Running app</h1>"));
+app.get("/", (_, res) => res.status(200).send("<h1>[Trendscads Backend] app running...</h1>"));
 app.get("/health", (_, res) => res.status(200).send("Health check works"));
 
 export default app;
