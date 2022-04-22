@@ -20,9 +20,9 @@ export const homeHandler = async (
       prisma.duckduckgo.findMany(query)
     ]);
 
-    const groupedArticles = _.groupBy(articles, "category");
-    const groupedVideos = _.groupBy(videos.filter((v: Prisma.youtubeCreateInput) => /watch/.test(v.url)), "category");
-    const groupedLinks =  _.groupBy(links, "category");
+    const groupedArticles = _.groupBy(articles.map(a => ({...a, type: "article"})), "category");
+    const groupedVideos = _.groupBy(videos.map(a => ({...a, type: "video"})).filter((v: Prisma.youtubeCreateInput) => /watch/.test(v.url)), "category");
+    const groupedLinks =  _.groupBy(links.map(a => ({...a, type: "search"})), "category");
     const groupedQueries = _.uniq(articles.map(article => article.related_queries.split(",")).flatMap(a => a)).slice(0, 50);
 
     res.status(200).json({

@@ -16,7 +16,7 @@ export const categoryHandler = async (
       return;
     }
 
-    const data = await Promise.all([
+    const [articles, videos, search] = await Promise.all([
       prisma?.google.findMany({
         where: {
           category: {
@@ -43,7 +43,11 @@ export const categoryHandler = async (
       }),
     ]);
   
-    res.status(200).json(data);
+    res.status(200).json([
+      articles.map(a => ({...a, type: "article"})),
+      videos.map(a => ({...a, type: "video"})),
+      search.map(a => ({...a, type: "search"})),
+    ]);
   } catch(error) {
     res.status(200).json([[], [], []]);
     console.log({ error });
