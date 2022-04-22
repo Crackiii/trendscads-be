@@ -28,6 +28,10 @@ export const storyHandler = async (
         result: data.result.websiteData
       });
     }
+
+    res.status(200).json({
+      result: {}
+    });
     
   } catch(error) {
     res.status(200).json({
