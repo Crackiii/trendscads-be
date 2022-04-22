@@ -1,6 +1,7 @@
 import express from "express";
 import { businessHandler } from "./categories/business";
 import { homeHandler } from "./categories/home";
+import { storyHandler } from "./categories/story";
 import {cryptocurrencyHandler} from "./categories/cryptocurrency";
 import {cultureHandler} from "./categories/culture";
 import {entertainmentHandler} from "./categories/entertainment";
@@ -33,6 +34,7 @@ app.get("/", (_, res) => res.status(200).send("<h1>[Trendscads Backend] app runn
 app.get("/health", (_, res) => res.status(200).send("Health check works"));
 
 app.get("/home", homeHandler);
+app.get("/story", storyHandler);
 app.get("/categories/business", businessHandler);
 app.get("/categories/cryptocurrency", cryptocurrencyHandler);
 app.get("/categories/culture", cultureHandler);

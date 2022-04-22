@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const business_1 = require("./categories/business");
 const home_1 = require("./categories/home");
+const story_1 = require("./categories/story");
 const cryptocurrency_1 = require("./categories/cryptocurrency");
 const culture_1 = require("./categories/culture");
 const entertainment_1 = require("./categories/entertainment");
@@ -33,6 +34,7 @@ app.use(function (_, res, next) {
 app.get("/", (_, res) => res.status(200).send("<h1>[Trendscads Backend] app running...</h1>"));
 app.get("/health", (_, res) => res.status(200).send("Health check works"));
 app.get("/home", home_1.homeHandler);
+app.get("/story", story_1.storyHandler);
 app.get("/categories/business", business_1.businessHandler);
 app.get("/categories/cryptocurrency", cryptocurrency_1.cryptocurrencyHandler);
 app.get("/categories/culture", culture_1.cultureHandler);

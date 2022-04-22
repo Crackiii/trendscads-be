@@ -7,7 +7,6 @@ export const homeHandler = async (
   req: Request,
   res: Response
 ) => {
-  console.log("homeHandler");
   try{
     const query = {
       where: {
@@ -24,9 +23,9 @@ export const homeHandler = async (
       results: {
         articles: _.groupBy(articles.map((article: any) => ({...article, catgory: article.catgory.split("-")[1].trim()})), "catgory"), 
         videos: _.groupBy(videos.filter((v: any) => /watch/.test(v.url)), "catgory"), 
-        links: _.groupBy(links, "category")} 
-      }
-    );
+        links: _.groupBy(links, "category"),
+        queries: _.uniq(articles.map(article => article.related_queries.split(",")).flatMap(a => a)).slice(0, 50)
+      }});
   } catch(error) {
     res.status(200).json({
       results: {
