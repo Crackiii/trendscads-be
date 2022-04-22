@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { Request, Response } from "express";
 import _ from "lodash";
 import { getPrismaClient } from "../client";
@@ -19,13 +20,20 @@ export const homeHandler = async (
       prisma.duckduckgo.findMany(query)
     ]);
 
+    const groupedArticles = _.groupBy(articles.map((article: Prisma.googleCreateInput) => ({...article, catgory: article.category.split("-")[1].trim()})), "category");
+    const groupedVideos = _.groupBy(videos.filter((v: Prisma.youtubeCreateInput) => /watch/.test(v.url)), "category");
+    const groupedLinks =  _.groupBy(links, "category");
+    const groupedQueries = _.uniq(articles.map(article => article.related_queries.split(",")).flatMap(a => a)).slice(0, 50);
+
     res.status(200).json({
       results: {
-        articles: _.groupBy(articles.map((article: any) => ({...article, catgory: article.catgory.split("-")[1].trim()})), "catgory"), 
-        videos: _.groupBy(videos.filter((v: any) => /watch/.test(v.url)), "catgory"), 
-        links: _.groupBy(links, "category"),
-        queries: _.uniq(articles.map(article => article.related_queries.split(",")).flatMap(a => a)).slice(0, 50)
-      }});
+        articles: groupedArticles, 
+        videos: groupedVideos, 
+        links: groupedLinks,
+        queries: groupedQueries
+      }
+    });
+    
   } catch(error) {
     res.status(200).json({
       results: {

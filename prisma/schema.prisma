@@ -30,7 +30,7 @@ model google {
   description     String
   related_queries String
   source          String   @db.VarChar(255)
-  catgory         String   @db.VarChar(255)
+  category         String   @db.VarChar(255)
   country         String   @db.VarChar(255)
   created_at      DateTime @default(now())
   updated_at      DateTime @default(now())
@@ -44,7 +44,7 @@ model youtube {
   thumbnail_lg      String   @db.VarChar(255)
   channel_name      String   @db.VarChar(255)
   channel_thumbnail String   @db.VarChar(255)
-  catgory           String   @db.VarChar(255)
+  category           String   @db.VarChar(255)
   country           String   @db.VarChar(255)
   created_at        DateTime @default(now())
   updated_at        DateTime @default(now())

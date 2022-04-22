@@ -1,6 +1,5 @@
 import axios from "axios";
 import { Request, Response } from "express";
-import _ from "lodash";
 import { getPrismaClient } from "../client";
 const prisma = getPrismaClient();
 
