@@ -13,25 +13,30 @@ export const storyHandler = async (
         id: Number(req.query.id),
       }
     };
-    if(req.query.type === "video") {
-      const video = await prisma.youtube.findFirst(query);
 
-      res.status(200).json({
-        result: video
-      });
+    switch(req.query.type) {
+      case "video": {
+        const video = await prisma.youtube.findFirst(query);
+        res.status(200).json({
+          result: video
+        });
+        break;
+      }
+      case "article":
+      case "search": {
+        const article = await prisma.google.findFirst(query);
+        const data = await (await axios.get(`https://google.trendscads.com/website?link=${article.url}`)).data;
+        res.status(200).json({
+          result: data.result.websiteData
+        });
+        break;
+      }
+      default: {
+        res.status(200).json({
+          result: {}
+        });
+      }
     }
-    if(req.query.type === "article" || req.query.type === "search") {
-     
-      const article = await prisma.google.findFirst(query);
-      const data = await (await axios.get(`https://google.trendscads.com/website?link=${article.url}`)).data;
-      res.status(200).json({
-        result: data.result.websiteData
-      });
-    }
-
-    res.status(200).json({
-      result: {}
-    });
     
   } catch(error) {
     res.status(200).json({
