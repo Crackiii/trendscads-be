@@ -3,6 +3,27 @@ import { Request, Response } from "express";
 import { getPrismaClient } from "../client";
 const prisma = getPrismaClient();
 
+const getRelatedData = async (title: string) => {
+  const relatedQuery: unknown = {
+    where: {
+      title: {
+        search: title.replace(/[^a-zA-Z ]/g, "").split(" ").join(" | ")
+      }
+    }
+  };
+  const [articles, videos, search] = await Promise.all([
+    prisma.google.findMany(relatedQuery),
+    prisma.youtube.findMany(relatedQuery),
+    prisma.duckduckgo.findMany(relatedQuery)
+  ]);
+  
+  return {
+    articles: articles.map(a => ({...a, type: "article"})),
+    videos: videos.map(a => ({...a, type: "video"})),
+    search: search.map(a => ({...a, type: "search"})),
+  };
+};
+
 export const storyHandler = async (
   req: Request,
   res: Response
@@ -17,30 +38,39 @@ export const storyHandler = async (
     switch(req.query.type) {
       case "video": {
         const video = await prisma.youtube.findFirst(query);
+        const related = await getRelatedData(video.title);
         res.status(200).json({
-          result: video
+          result: video,
+          related
         });
         break;
       }
       case "article":
       case "search": {
         const article = await prisma.google.findFirst(query);
-        const data = await (await axios.get(`https://google.trendscads.com/website?link=${article.url}`)).data;
+        const [website, related] = await Promise.all([
+          axios.get(`https://google.trendscads.com/website?link=${article.url}`),
+          getRelatedData(article.title)
+        ]);
+        
         res.status(200).json({
-          result: data.result.websiteData
+          result: website.data.result.websiteData,
+          related
         });
         break;
       }
       default: {
         res.status(200).json({
-          result: {}
+          result: {},
+          related: []
         });
       }
     }
     
   } catch(error) {
     res.status(200).json({
-      results: {}
+      results: {},
+      related: []
     });
     console.log({ error });
   }
