@@ -4,10 +4,12 @@ import { getPrismaClient } from "../client";
 const prisma = getPrismaClient();
 
 const getRelatedData = async (title: string) => {
+  console.log("FUCK YOU BASTARD");
+  try {
   const relatedQuery: unknown = {
     where: {
       title: {
-        search: title.replace(/[^a-zA-Z ]/g, "").split(" ").join(" | ")
+        search: title.replace(/[^a-zA-Z ]/g, "").split(" ").filter(a => a.trim().length > 2).join(" | ")
       }
     }
   };
@@ -18,10 +20,17 @@ const getRelatedData = async (title: string) => {
   ]);
   
   return {
-    articles: articles.map(a => ({...a, type: "article"})),
-    videos: videos.map(a => ({...a, type: "video"})),
-    search: search.map(a => ({...a, type: "search"})),
+    articles: articles.map(a => ({...a, type: "article"})).slice(0, 30),
+    videos: videos.map(a => ({...a, type: "video"})).slice(0, 30),
+    search: search.map(a => ({...a, type: "search"})).slice(0, 30),
   };
+} catch(error) {
+  return {
+    articles: [],
+    videos: [],
+    search: []
+  };
+}
 };
 
 export const storyHandler = async (
@@ -52,7 +61,7 @@ export const storyHandler = async (
           axios.get(`https://google.trendscads.com/website?link=${article.url}`),
           getRelatedData(article.title)
         ]);
-        
+
         res.status(200).json({
           result: website.data.result.websiteData,
           related
