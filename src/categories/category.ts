@@ -16,6 +16,9 @@ export const categoryHandler = async (
     if(ip) {
       url = `https://api.geoapify.com/v1/ipinfo?ip=${ip}&apiKey=589ae61973f3443faf4b13b2f1c57ae9`;
     }
+
+    console.log("IP ===== > : ", ip);
+
     const geo = await (await axios.get(url)).data;
     const category = req.params.category;
     const country = geo.country.iso_code ? geo.country.iso_code : "US";
