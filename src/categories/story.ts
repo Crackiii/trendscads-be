@@ -72,6 +72,10 @@ export const storyHandler = async (
     switch(req.query.type) {
       case "video": {
         const video = await prisma.youtube.findFirst(query);
+        if(!video) {
+          res.status(404).send("Video not found");
+          return;
+        }
         const related = await getRelatedData(video.title);
         res.status(200).json({
           result: video,
@@ -81,6 +85,10 @@ export const storyHandler = async (
       }
       case "article": {
         const article = await prisma.google_realtime.findFirst(query);
+        if(!article) {
+          res.status(404).send("Article not found");
+          return;
+        }
         const [website, related] = await Promise.all([
           axios.get(`https://google.trendscads.com/website?link=${article.url}`),
           getRelatedData(article.title)
@@ -95,6 +103,10 @@ export const storyHandler = async (
       case "search": {
         //TOOD: introduct another article type: realtime, daily
         const search = await prisma.duckduckgo.findFirst(query);
+        if(!search) {
+          res.status(404).send("Search not found");
+          return;
+        }
         const [website, related] = await Promise.all([
           axios.get(`https://google.trendscads.com/website?link=${search.url}`),
           getRelatedData(search.title)
