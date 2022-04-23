@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Request, Response } from "express";
 import _ from "lodash";
 import { getPrismaClient } from "../client";
@@ -20,7 +21,10 @@ export const homeHandler = async (
   res: Response
 ) => {
   try{
-    const country = req.query.country ? String(req.query.country) : "US";
+    const ip = req.socket.remoteAddress.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0];
+    const geo = await (await axios.get(`https://api.geoapify.com/v1/ipinfo?ip=${ip}&apiKey=589ae61973f3443faf4b13b2f1c57ae9`)).data;
+    
+    const country = geo.country?.iso_code ? geo.country?.iso_code : "US";
 
     const isAvailable = await prisma.countries.findFirst({
       where: {

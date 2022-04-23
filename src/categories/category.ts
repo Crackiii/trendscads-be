@@ -1,5 +1,6 @@
 import { getPrismaClient } from "../client";
 import { Request, Response } from "express";
+import axios from "axios";
 const prisma = getPrismaClient();
 
 export const categoryHandler = async (
@@ -7,8 +8,10 @@ export const categoryHandler = async (
   res: Response
 ) =>  {
   try {
+    const ip = req.socket.remoteAddress.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0];
+    const geo = await (await axios.get(`https://api.geoapify.com/v1/ipinfo?ip=${ip}&apiKey=589ae61973f3443faf4b13b2f1c57ae9`)).data;
     const category = req.params.category;
-    const country = String(req.query.country);
+    const country = geo.country.iso_code ? geo.country.iso_code : "US";
 
     if(!category) {
       res.status(404).send("Category not found");
