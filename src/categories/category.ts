@@ -23,7 +23,11 @@ export const categoryHandler = async (
             contains: String(category)
           },
           country: country ? String(country) : "US"
-        }
+        },
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 50
       }),
       prisma?.google_realtime.findMany({
         where: {
@@ -31,7 +35,11 @@ export const categoryHandler = async (
             contains: String(category)
           },
           country: country ? String(country) : "US"
-        }
+        },
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 50
       }),
       prisma?.youtube.findMany({
         where: {
@@ -39,7 +47,11 @@ export const categoryHandler = async (
             contains: String(category)
           },
           country: country ? String(country) : "US"
-        }
+        },
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 50
       }),
       prisma?.duckduckgo.findMany({
         where: {
@@ -47,7 +59,11 @@ export const categoryHandler = async (
             contains: String(category)
           },
           country: country ? String(country) : "US"
-        }
+        },
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 50
       }),
     ]);
   

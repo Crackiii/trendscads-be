@@ -6,7 +6,7 @@ const prisma = getPrismaClient();
 const getRelatedData = async (title: string) => {
   console.log("FUCK YOU BASTARD");
   try {
-  const relatedQuery: unknown = {
+  const relatedQuery: Record<string, unknown> = {
     where: {
       title: {
         search: title.replace(/[^a-zA-Z ]/g, "").split(" ").filter(a => a.trim().length > 2).join(" | ")
@@ -14,16 +14,40 @@ const getRelatedData = async (title: string) => {
     }
   };
   const [articles_realtime, articles_daily, videos, search] = await Promise.all([
-    prisma.google_realtime.findMany(relatedQuery),
-    prisma.google_daily.findMany(relatedQuery),
-    prisma.youtube.findMany(relatedQuery),
-    prisma.duckduckgo.findMany(relatedQuery)
+    prisma.google_realtime.findMany({
+      ...relatedQuery,
+      orderBy: {
+        created_at: "desc"
+      },
+      take: 20
+    }),
+    prisma.google_daily.findMany({
+      ...relatedQuery,
+      orderBy: {
+        created_at: "desc"
+      },
+      take: 20
+    }),
+    prisma.youtube.findMany({
+      ...relatedQuery,
+      orderBy: {
+        created_at: "desc"
+      },
+      take: 20
+    }),
+    prisma.duckduckgo.findMany({
+      ...relatedQuery,
+      orderBy: {
+        created_at: "desc"
+      },
+      take: 20
+    })
   ]);
   
   return {
-    articles: [...articles_realtime, ...articles_daily].map(a => ({...a, type: "article"})).slice(0, 30),
-    videos: videos.map(a => ({...a, type: "video"})).slice(0, 30),
-    search: search.map(a => ({...a, type: "search"})).slice(0, 30),
+    articles: [...articles_realtime, ...articles_daily].map(a => ({...a, type: "article"})),
+    videos: videos.map(a => ({...a, type: "video"})),
+    search: search.map(a => ({...a, type: "search"})),
   };
 } catch(error) {
   return {

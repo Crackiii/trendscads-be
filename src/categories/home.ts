@@ -15,16 +15,40 @@ export const homeHandler = async (
       }
     };
     const [articles_realtime, articles_daily, videos, links] = await Promise.all([
-      prisma.google_realtime.findMany(query),
-      prisma.google_daily.findMany(query),
-      prisma.youtube.findMany(query),
-      prisma.duckduckgo.findMany(query)
+      prisma.google_realtime.findMany({
+        ...query,
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 10
+      }),
+      prisma.google_daily.findMany({
+        ...query,
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 10
+      }),
+      prisma.youtube.findMany({
+        ...query,
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 10
+      }),
+      prisma.duckduckgo.findMany({
+        ...query,
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 10
+      })
     ]);
 
     const groupedArticles = _.groupBy([...articles_realtime, ...articles_daily].map(a => ({...a, type: "article"})), "category");
     const groupedVideos = _.groupBy(videos.map(a => ({...a, type: "video"})).filter((v: Prisma.youtubeCreateInput) => /watch/.test(v.url)), "category");
     const groupedLinks =  _.groupBy(links.map(a => ({...a, type: "search"})), "category");
-    const groupedQueries = _.uniq([...articles_realtime, ...articles_daily].map(article => article.related_queries.split(",")).flatMap(a => a)).slice(0, 50);
+    const groupedQueries = _.uniq([...articles_realtime, ...articles_daily].map(article => article.related_queries.split(",")).flatMap(a => a));
 
     res.status(200).json({
       results: {
