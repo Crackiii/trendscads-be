@@ -1,6 +1,7 @@
 import { getPrismaClient } from "../client";
 import { Request, Response } from "express";
 import axios from "axios";
+import requestIp from "request-ip";
 const prisma = getPrismaClient();
 
 export const categoryHandler = async (
@@ -9,8 +10,8 @@ export const categoryHandler = async (
 ) =>  {
   try {
     let url = "https://api.geoapify.com/v1/ipinfo?apiKey=589ae61973f3443faf4b13b2f1c57ae9";
-    const ip = req.socket.remoteAddress.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0] ||
-               String(req.headers["x-forwarded-for"]).split(" ")[0];
+    const ip = requestIp.getClientIp(req);
+    console.log("IP TEST ===== > : ", ip);
 
     if(ip) {
       url = `https://api.geoapify.com/v1/ipinfo?ip=${ip}&apiKey=589ae61973f3443faf4b13b2f1c57ae9`;
