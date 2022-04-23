@@ -4,7 +4,7 @@ import { getPrismaClient } from "../client";
 const prisma = getPrismaClient();
 
 const getRelatedData = async (title: string) => {
-  console.log("FUCK YOU BASTARD");
+
   try {
   const relatedQuery: Record<string, unknown> = {
     where: {
@@ -79,16 +79,25 @@ export const storyHandler = async (
         });
         break;
       }
-      case "article":
+      case "article": {
+        const article = await prisma.google_realtime.findFirst(query);
+        const [website, related] = await Promise.all([
+          axios.get(`https://google.trendscads.com/website?link=${article.url}`),
+          getRelatedData(article.title)
+        ]);
+
+        res.status(200).json({
+          result: website.data.result.websiteData,
+          related
+        });
+        break;
+      }
       case "search": {
         //TOOD: introduct another article type: realtime, daily
-        const [articles_realtime] = await Promise.all([
-          prisma.google_realtime.findFirst(query),
-          prisma.google_daily.findFirst(query),
-        ]);
+        const search = await prisma.duckduckgo.findFirst(query);
         const [website, related] = await Promise.all([
-          axios.get(`https://google.trendscads.com/website?link=${articles_realtime.url}`),
-          getRelatedData(articles_realtime.title)
+          axios.get(`https://google.trendscads.com/website?link=${search.url}`),
+          getRelatedData(search.title)
         ]);
 
         res.status(200).json({
