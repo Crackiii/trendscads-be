@@ -16,8 +16,16 @@ export const categoryHandler = async (
       return;
     }
 
-    const [articles, videos, search] = await Promise.all([
-      prisma?.google.findMany({
+    const [articles_daily, articles_realtime, videos, search] = await Promise.all([
+      prisma?.google_daily.findMany({
+        where: {
+          category: {
+            contains: String(category)
+          },
+          country: country ? String(country) : "US"
+        }
+      }),
+      prisma?.google_realtime.findMany({
         where: {
           category: {
             contains: String(category)
@@ -44,7 +52,7 @@ export const categoryHandler = async (
     ]);
   
     res.status(200).json([
-      articles.map(a => ({...a, type: "article"})),
+      [...articles_realtime, ...articles_daily].map(a => ({...a, type: "article"})),
       videos.map(a => ({...a, type: "video"})),
       search.map(a => ({...a, type: "search"})),
     ]);

@@ -13,14 +13,15 @@ const getRelatedData = async (title: string) => {
       }
     }
   };
-  const [articles, videos, search] = await Promise.all([
-    prisma.google.findMany(relatedQuery),
+  const [articles_realtime, articles_daily, videos, search] = await Promise.all([
+    prisma.google_realtime.findMany(relatedQuery),
+    prisma.google_daily.findMany(relatedQuery),
     prisma.youtube.findMany(relatedQuery),
     prisma.duckduckgo.findMany(relatedQuery)
   ]);
   
   return {
-    articles: articles.map(a => ({...a, type: "article"})).slice(0, 30),
+    articles: [...articles_realtime, ...articles_daily].map(a => ({...a, type: "article"})).slice(0, 30),
     videos: videos.map(a => ({...a, type: "video"})).slice(0, 30),
     search: search.map(a => ({...a, type: "search"})).slice(0, 30),
   };
@@ -56,10 +57,14 @@ export const storyHandler = async (
       }
       case "article":
       case "search": {
-        const article = await prisma.google.findFirst(query);
+        //TOOD: introduct another article type: realtime, daily
+        const [articles_realtime] = await Promise.all([
+          prisma.google_realtime.findFirst(query),
+          prisma.google_daily.findFirst(query),
+        ]);
         const [website, related] = await Promise.all([
-          axios.get(`https://google.trendscads.com/website?link=${article.url}`),
-          getRelatedData(article.title)
+          axios.get(`https://google.trendscads.com/website?link=${articles_realtime.url}`),
+          getRelatedData(articles_realtime.title)
         ]);
 
         res.status(200).json({
