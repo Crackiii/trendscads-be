@@ -3,6 +3,18 @@ import _ from "lodash";
 import { getPrismaClient } from "../client";
 const prisma = getPrismaClient();
 
+const createObject = (data: unknown, pick: number, type: string) => {
+  const obj: {[key: string]: unknown} = {};
+
+  Object.entries(data)
+  .forEach(([key, value]) => {
+    obj[key] = (value as unknown[])
+                .slice(0, pick)
+                .map(a => ({...(a as Record<string, unknown>), type}));
+  });
+
+  return obj;
+};
 export const homeHandler = async (
   req: Request,
   res: Response
@@ -47,40 +59,22 @@ export const homeHandler = async (
         },
       })
     ]);
-    
-    const articlesRealtimeGroups = _.groupBy(articles_realtime, "category");
-    const videosGroups = _.groupBy(videos, "category");
-    const linkssGroups = _.groupBy(links, "category");
-  
-    const articles_realtime_sliced: {[key: string]: unknown} = {};
-    Object.entries(articlesRealtimeGroups)
-    .forEach(([key, value]) => {
-      articles_realtime_sliced[key] = value.slice(0, 8).map(a => ({...a, type: "article"}));
-    });
 
+    const articlesRealtimeGroups = createObject(_.groupBy(articles_realtime, "category"), 8, "article");
+    const videosGroups = createObject(_.groupBy(videos, "category"), 8, "video");
+    const linksGroups = createObject(_.groupBy(links, "category"), 8, "link");
+  
     const articles_daily_sliced =  [
       ...articles_daily.slice(0, 8)
         .map(a => ({...a, type: "article"}))
     ];
 
-    const videos_sliced: {[key: string]: unknown} = {};
-    Object.entries(videosGroups)
-    .forEach(([key, value]) => {
-      videos_sliced[key] = value.slice(0, 8).map(a => ({...a, type: "video"}));
-    });
-
-    const links_sliced: {[key: string]: unknown} = {};
-    Object.entries(linkssGroups)
-    .forEach(([key, value]) => {
-      links_sliced[key] = value.slice(0, 8).map(a => ({...a, type: "link"}));
-    });
-
     res.status(200).json({
       results: {
-        articles: articles_realtime_sliced,
+        articles: articlesRealtimeGroups,
         daily_articles: articles_daily_sliced,
-        videos: videos_sliced,
-        links: links_sliced,
+        videos: videosGroups,
+        links: linksGroups,
         queries: _.uniq([...articles_realtime, ...articles_daily].map(article => article.related_queries.split(",")).flatMap(a => a)).slice(0, 50)
       }
     });
