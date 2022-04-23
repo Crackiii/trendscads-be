@@ -21,8 +21,10 @@ export const homeHandler = async (
   res: Response
 ) => {
   try{
-    const ip = req.socket.remoteAddress.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0];
+    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0];
     const geo = await (await axios.get(`https://api.geoapify.com/v1/ipinfo?ip=${ip}&apiKey=589ae61973f3443faf4b13b2f1c57ae9`)).data;
+
+    console.log("========>", {REMOTE_ADDRESS: req.ip, IPS: req.headers["x-forwarded-for"] || req.socket.remoteAddress.match(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/)[0]});
     
     const country = geo.country?.iso_code ? geo.country?.iso_code : "US";
 
