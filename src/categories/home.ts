@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client";
 import { Request, Response } from "express";
 import _ from "lodash";
 import { getPrismaClient } from "../client";
@@ -11,7 +10,7 @@ export const homeHandler = async (
   try{
     const query = {
       where: {
-        country:  req.query.country ? String(req.query.country) : "US"
+        country: "DE"
       }
     };
     const [articles_realtime, articles_daily, videos, links] = await Promise.all([
@@ -20,42 +19,66 @@ export const homeHandler = async (
         orderBy: {
           created_at: "desc"
         },
-        take: 10
       }),
       prisma.google_daily.findMany({
         ...query,
         orderBy: {
           created_at: "desc"
         },
-        take: 10
       }),
       prisma.youtube.findMany({
-        ...query,
+        where: {
+          country: "DE",
+          url: {
+            contains: "watch"
+          }
+        },
         orderBy: {
           created_at: "desc"
         },
-        take: 10
       }),
       prisma.duckduckgo.findMany({
         ...query,
         orderBy: {
           created_at: "desc"
         },
-        take: 10
+        
       })
     ]);
+    const articlesRealtimeGroups = _.groupBy(articles_realtime, "category");
+    const videosGroups = _.groupBy(videos, "category");
+    const linkssGroups = _.groupBy(links, "category");
+  
+    const articles_realtime_sliced: {[key: string]: unknown} = {};
+    Object.entries(articlesRealtimeGroups)
+    .forEach(([key, value]) => {
+      articles_realtime_sliced[key] = value.slice(0, 8).map(a => ({...a, type: "article"}));
+    });
 
-    const groupedArticles = _.groupBy([...articles_realtime, ...articles_daily].map(a => ({...a, type: "article"})), "category");
-    const groupedVideos = _.groupBy(videos.map(a => ({...a, type: "video"})).filter((v: Prisma.youtubeCreateInput) => /watch/.test(v.url)), "category");
-    const groupedLinks =  _.groupBy(links.map(a => ({...a, type: "search"})), "category");
-    const groupedQueries = _.uniq([...articles_realtime, ...articles_daily].map(article => article.related_queries.split(",")).flatMap(a => a));
+    const articles_daily_sliced =  [
+      ...articles_daily.slice(0, 8)
+        .map(a => ({...a, type: "article"}))
+    ];
+
+    const videos_sliced: {[key: string]: unknown} = {};
+    Object.entries(videosGroups)
+    .forEach(([key, value]) => {
+      videos_sliced[key] = value.slice(0, 8).map(a => ({...a, type: "video"}));
+    });
+
+    const links_sliced: {[key: string]: unknown} = {};
+    Object.entries(linkssGroups)
+    .forEach(([key, value]) => {
+      links_sliced[key] = value.slice(0, 8).map(a => ({...a, type: "link"}));
+    });
 
     res.status(200).json({
       results: {
-        articles: groupedArticles, 
-        videos: groupedVideos, 
-        links: groupedLinks,
-        queries: groupedQueries
+        articles: articles_realtime_sliced,
+        daily_articles: articles_daily_sliced,
+        videos: videos_sliced,
+        links: links_sliced,
+        queries: _.uniq([...articles_realtime, ...articles_daily].map(article => article.related_queries.split(",")).flatMap(a => a)).slice(0, 50)
       }
     });
     
@@ -64,7 +87,8 @@ export const homeHandler = async (
       results: {
         articles: [],
         videos: [],
-        links: []
+        links: [],
+        queries: []
       }
     });
     console.log({ error });

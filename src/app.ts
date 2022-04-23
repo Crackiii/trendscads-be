@@ -3,8 +3,6 @@ import { Request, Response } from "express";
 import { categoryHandler } from "./categories/category";
 import { homeHandler } from "./categories/home";
 import { storyHandler } from "./categories/story";
-// import { getPrismaClient } from "./client";
-// const prisma = getPrismaClient();
 
 const app = express();
 
@@ -26,21 +24,5 @@ app.get("/home", homeHandler);
 app.get("/story", storyHandler);
 app.get("/categories/:category", categoryHandler);
 
-// const byDate = async () => {
-//   const data = await prisma?.google_realtime.findMany({
-//     where: {
-//       country:  "DE",
-//       category: "business",
-//     },
-//     orderBy: {
-//       created_at: "desc"
-//     },
-//     take: 100
-//   });
-
-//   console.log(data.map(a => a.id));
-// };
-
-// byDate();
 
 export default app;
