@@ -62,7 +62,7 @@ export const homeHandler = async (
 
     const articlesRealtimeGroups = createObject(_.groupBy(articles_realtime, "category"), 8, "article");
     const videosGroups = createObject(_.groupBy(videos, "category"), 8, "video");
-    const linksGroups = createObject(_.groupBy(links, "category"), 8, "link");
+    const linksGroups = createObject(_.groupBy(links, "category"), 8, "search");
   
     const articles_daily_sliced =  [
       ...articles_daily.slice(0, 8)
