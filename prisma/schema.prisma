@@ -65,3 +65,15 @@ model google_realtime {
   created_at      DateTime @default(now())
   updated_at      DateTime @default(now())
 }
+
+model countries {
+  id              Int      @id @default(autoincrement())
+  country         String   @db.VarChar(100)
+  youtube         String   @db.VarChar(10)
+  google_daily    String   @db.VarChar(10)
+  google_realtime String   @db.VarChar(10)
+  duckduckgo      String   @db.VarChar(10)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
+  country_code    String   @db.VarChar(10)
+}

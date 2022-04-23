@@ -6,15 +6,20 @@ export const categoryHandler = async (
   req: Request,
   res: Response
 ) =>  {
-  console.log("CATEGORY HANDLER");
   try {
     const category = req.params.category;
-    const country = req.query.country;
+    const country = String(req.query.country);
 
     if(!category) {
       res.status(404).send("Category not found");
       return;
     }
+
+    const isAvailable = await prisma.countries.findFirst({
+      where: {
+        country_code: String(country)
+      }
+    });
 
     const [articles_daily, articles_realtime, videos, search] = await Promise.all([
       prisma?.google_daily.findMany({
@@ -22,7 +27,7 @@ export const categoryHandler = async (
           category: {
             contains: String(category)
           },
-          country: country ? String(country) : "US"
+          country: isAvailable.google_daily === "true" ? country : "US"
         },
         orderBy: {
           created_at: "desc"
@@ -34,7 +39,7 @@ export const categoryHandler = async (
           category: {
             contains: String(category)
           },
-          country: country ? String(country) : "US"
+          country: isAvailable.google_realtime === "true" ? country : "US"
         },
         orderBy: {
           created_at: "desc"
@@ -46,7 +51,7 @@ export const categoryHandler = async (
           category: {
             contains: String(category)
           },
-          country: country ? String(country) : "US"
+          country: isAvailable.youtube === "true" ? country : "US"
         },
         orderBy: {
           created_at: "desc"
@@ -58,7 +63,7 @@ export const categoryHandler = async (
           category: {
             contains: String(category)
           },
-          country: country ? String(country) : "US"
+          country: isAvailable.duckduckgo === "true" ? country : "US"
         },
         orderBy: {
           created_at: "desc"

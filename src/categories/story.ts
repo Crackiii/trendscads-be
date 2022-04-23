@@ -6,56 +6,56 @@ const prisma = getPrismaClient();
 const getRelatedData = async (title: string) => {
 
   try {
-  const relatedQuery: Record<string, unknown> = {
-    where: {
-      title: {
-        search: title.replace(/[^a-zA-Z ]/g, "").split(" ").filter(a => a.trim().length > 2).join(" | ")
+    const relatedQuery: Record<string, unknown> = {
+      where: {
+        title: {
+          search: title.replace(/[^a-zA-Z ]/g, "").split(" ").filter(a => a.trim().length > 2).join(" | ")
+        }
       }
-    }
-  };
-  const [articles_realtime, articles_daily, videos, search] = await Promise.all([
-    prisma.google_realtime.findMany({
-      ...relatedQuery,
-      orderBy: {
-        created_at: "desc"
-      },
-      take: 20
-    }),
-    prisma.google_daily.findMany({
-      ...relatedQuery,
-      orderBy: {
-        created_at: "desc"
-      },
-      take: 20
-    }),
-    prisma.youtube.findMany({
-      ...relatedQuery,
-      orderBy: {
-        created_at: "desc"
-      },
-      take: 20
-    }),
-    prisma.duckduckgo.findMany({
-      ...relatedQuery,
-      orderBy: {
-        created_at: "desc"
-      },
-      take: 20
-    })
-  ]);
-  
-  return {
-    articles: [...articles_realtime, ...articles_daily].map(a => ({...a, type: "article"})),
-    videos: videos.map(a => ({...a, type: "video"})),
-    search: search.map(a => ({...a, type: "search"})),
-  };
-} catch(error) {
-  return {
-    articles: [],
-    videos: [],
-    search: []
-  };
-}
+    };
+    const [articles_realtime, articles_daily, videos, search] = await Promise.all([
+      prisma.google_realtime.findMany({
+        ...relatedQuery,
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 20
+      }),
+      prisma.google_daily.findMany({
+        ...relatedQuery,
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 20
+      }),
+      prisma.youtube.findMany({
+        ...relatedQuery,
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 20
+      }),
+      prisma.duckduckgo.findMany({
+        ...relatedQuery,
+        orderBy: {
+          created_at: "desc"
+        },
+        take: 20
+      })
+    ]);
+    
+    return {
+      articles: [...articles_realtime, ...articles_daily].map(a => ({...a, type: "article"})),
+      videos: videos.map(a => ({...a, type: "video"})),
+      search: search.map(a => ({...a, type: "search"})),
+    };
+  } catch(error) {
+    return {
+      articles: [],
+      videos: [],
+      search: []
+    };
+  }
 };
 
 export const storyHandler = async (

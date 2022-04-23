@@ -22,10 +22,16 @@ export const homeHandler = async (
   try{
     const country = req.query.country ? String(req.query.country) : "US";
 
+    const isAvailable = await prisma.countries.findFirst({
+      where: {
+        country_code: country
+      }
+    });
+
     const [articles_realtime, articles_daily, videos, links] = await Promise.all([
       prisma.google_realtime.findMany({
         where: {
-          country
+          country: isAvailable.google_realtime === "true" ? country : "US"
         },
         orderBy: {
           created_at: "desc"
@@ -33,7 +39,7 @@ export const homeHandler = async (
       }),
       prisma.google_daily.findMany({
         where: {
-          country
+          country: isAvailable.google_daily === "true" ? country : "US"
         },
         orderBy: {
           created_at: "desc"
@@ -41,7 +47,7 @@ export const homeHandler = async (
       }),
       prisma.youtube.findMany({
         where: {
-          country,
+          country: isAvailable.youtube === "true" ? country : "US",
           url: {
             contains: "watch"
           }
@@ -52,7 +58,7 @@ export const homeHandler = async (
       }),
       prisma.duckduckgo.findMany({
         where: {
-          country
+          country: isAvailable.duckduckgo === "true" ? country : "US"
         },
         orderBy: {
           created_at: "desc"
