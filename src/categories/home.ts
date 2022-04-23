@@ -8,27 +8,28 @@ export const homeHandler = async (
   res: Response
 ) => {
   try{
-    const query = {
-      where: {
-        country: "DE"
-      }
-    };
+    const country = req.query.country ? String(req.query.country) : "US";
+
     const [articles_realtime, articles_daily, videos, links] = await Promise.all([
       prisma.google_realtime.findMany({
-        ...query,
+        where: {
+          country
+        },
         orderBy: {
           created_at: "desc"
         },
       }),
       prisma.google_daily.findMany({
-        ...query,
+        where: {
+          country
+        },
         orderBy: {
           created_at: "desc"
         },
       }),
       prisma.youtube.findMany({
         where: {
-          country: "DE",
+          country,
           url: {
             contains: "watch"
           }
@@ -38,13 +39,15 @@ export const homeHandler = async (
         },
       }),
       prisma.duckduckgo.findMany({
-        ...query,
+        where: {
+          country
+        },
         orderBy: {
           created_at: "desc"
         },
-        
       })
     ]);
+    
     const articlesRealtimeGroups = _.groupBy(articles_realtime, "category");
     const videosGroups = _.groupBy(videos, "category");
     const linkssGroups = _.groupBy(links, "category");
