@@ -1,8 +1,6 @@
-import axios from "axios";
 import { Request, Response } from "express";
 import _ from "lodash";
 import { getPrismaClient } from "../client";
-import requestIp from "request-ip";
 const prisma = getPrismaClient();
 
 const createObject = (data: unknown, pick: number, type: string) => {
@@ -23,15 +21,7 @@ export const homeHandler = async (
   res: Response
 ) => {
   try{
-    let url = "https://api.geoapify.com/v1/ipinfo?apiKey=589ae61973f3443faf4b13b2f1c57ae9";
-    const ip = requestIp.getClientIp(req);
-
-    if(ip) {
-      url = `https://api.geoapify.com/v1/ipinfo?ip=${ip}&apiKey=589ae61973f3443faf4b13b2f1c57ae9`;
-    }
-
-    const geo = await (await axios.get(url)).data;
-    const country = geo.country?.iso_code ? geo.country?.iso_code : "US";
+    const country = req.query.country ?  String(req.query.country) : "US";
 
     const isAvailable = await prisma.countries.findFirst({
       where: {

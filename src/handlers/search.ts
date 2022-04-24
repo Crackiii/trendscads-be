@@ -1,8 +1,6 @@
 // import axios from "axios";
 import { Request, Response } from "express";
 import { getPrismaClient } from "../client";
-import requestIp from "request-ip";
-import axios from "axios";
 const prisma = getPrismaClient();
 
 export const searchHandler = async (
@@ -13,17 +11,7 @@ export const searchHandler = async (
     const query = String(req.query.q).replace(/[^a-zA-Z0-9 ]/g, "").split(" ").join(" | ");
 
     if(!query) {
-      let url = "https://api.geoapify.com/v1/ipinfo?apiKey=589ae61973f3443faf4b13b2f1c57ae9";
-      const ip = requestIp.getClientIp(req);
-  
-      if(ip) {
-        url = `https://api.geoapify.com/v1/ipinfo?ip=${ip}&apiKey=589ae61973f3443faf4b13b2f1c57ae9`;
-      }
-  
-      const geo = await (await axios.get(url)).data;
-      const country = geo.country?.iso_code ? geo.country?.iso_code : "US";
-
-      console.log("IP TEST ===== > : ", country);
+      const country = req.query.country ?  String(req.query.country) : "US";
 
       const isAvailable = await prisma.countries.findFirst({
         where: {
@@ -81,7 +69,7 @@ export const searchHandler = async (
           search: search.map(a => ({...a, type: "search"})),
         }
       });
-      
+
       return;
     }
 
