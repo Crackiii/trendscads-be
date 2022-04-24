@@ -83,7 +83,7 @@ export const homeHandler = async (
         daily_articles: articles_daily_sliced.length === 0 ? _.reverse(articles_realtime).slice(0, 8) : articles_daily_sliced,
         videos: videosGroups,
         links: linksGroups,
-        queries: _.uniq([...articles_realtime, ...articles_daily].map(article => article.related_queries.split(",")).flatMap(a => a)).slice(0, 50)
+        queries: _.uniq([...articles_realtime, ...articles_daily].map(article => article.related_queries.split(",").slice(0, 3)).flatMap(a => a))
       }
     });
     
