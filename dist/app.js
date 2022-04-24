@@ -4,9 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const category_1 = require("./categories/category");
-const home_1 = require("./categories/home");
-const story_1 = require("./categories/story");
+const category_1 = require("./handlers/category");
+const home_1 = require("./handlers/home");
+const search_1 = require("./handlers/search");
+const story_1 = require("./handlers/story");
 const app = (0, express_1.default)();
 app.set("port", process.env.PORT || 3006);
 app.use(express_1.default.json());
@@ -21,5 +22,6 @@ app.get("/health", (_, res) => res.status(200).send("Health check works"));
 app.get("/home", home_1.homeHandler);
 app.get("/story", story_1.storyHandler);
 app.get("/categories/:category", category_1.categoryHandler);
+app.get("/search", search_1.searchHandler);
 exports.default = app;
 //# sourceMappingURL=app.js.map

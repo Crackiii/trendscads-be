@@ -1,8 +1,9 @@
 import express from "express";
 import { Request, Response } from "express";
-import { categoryHandler } from "./categories/category";
-import { homeHandler } from "./categories/home";
-import { storyHandler } from "./categories/story";
+import { categoryHandler } from "./handlers/category";
+import { homeHandler } from "./handlers/home";
+import { searchHandler } from "./handlers/search";
+import { storyHandler } from "./handlers/story";
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.get("/health", (_, res) => res.status(200).send("Health check works"));
 app.get("/home", homeHandler);
 app.get("/story", storyHandler);
 app.get("/categories/:category", categoryHandler);
+app.get("/search", searchHandler);
 
 
 export default app;

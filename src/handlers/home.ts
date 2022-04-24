@@ -25,7 +25,6 @@ export const homeHandler = async (
   try{
     let url = "https://api.geoapify.com/v1/ipinfo?apiKey=589ae61973f3443faf4b13b2f1c57ae9";
     const ip = requestIp.getClientIp(req);
-    console.log("IP TEST ===== > : ", ip);
 
     if(ip) {
       url = `https://api.geoapify.com/v1/ipinfo?ip=${ip}&apiKey=589ae61973f3443faf4b13b2f1c57ae9`;
@@ -61,9 +60,10 @@ export const homeHandler = async (
         where: {
           country: isAvailable.youtube === "true" ? country : "US",
           url: {
-            contains: "watch"
+            startsWith: "/watch?v="
           }
         },
+        distinct: "url",
         orderBy: {
           created_at: "desc"
         },
