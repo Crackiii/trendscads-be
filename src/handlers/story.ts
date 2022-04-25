@@ -19,6 +19,7 @@ const getRelatedData = async (title: string) => {
         orderBy: {
           created_at: "desc"
         },
+        distinct: "url",
         take: 20
       }),
       prisma.google_daily.findMany({
@@ -26,6 +27,7 @@ const getRelatedData = async (title: string) => {
         orderBy: {
           created_at: "desc"
         },
+        distinct: "url",
         take: 20
       }),
       prisma.youtube.findMany({
@@ -33,6 +35,7 @@ const getRelatedData = async (title: string) => {
         orderBy: {
           created_at: "desc"
         },
+        distinct: "url",
         take: 20
       }),
       prisma.duckduckgo.findMany({
@@ -40,6 +43,7 @@ const getRelatedData = async (title: string) => {
         orderBy: {
           created_at: "desc"
         },
+        distinct: "url",
         take: 20
       })
     ]);

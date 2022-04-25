@@ -29,6 +29,7 @@ export const categoryHandler = async (
           },
           country: isAvailable.google_daily === "true" ? country : "US"
         },
+        distinct: "url",
         orderBy: {
           created_at: "desc"
         },
@@ -41,6 +42,7 @@ export const categoryHandler = async (
           },
           country: isAvailable.google_realtime === "true" ? country : "US"
         },
+        distinct: "url",
         orderBy: {
           created_at: "desc"
         },
@@ -53,6 +55,7 @@ export const categoryHandler = async (
           },
           country: isAvailable.youtube === "true" ? country : "US"
         },
+        distinct: "url",
         orderBy: {
           created_at: "desc"
         },
@@ -65,6 +68,7 @@ export const categoryHandler = async (
           },
           country: isAvailable.duckduckgo === "true" ? country : "US"
         },
+        distinct: "url",
         orderBy: {
           created_at: "desc"
         },

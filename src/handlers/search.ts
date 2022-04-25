@@ -27,6 +27,7 @@ export const searchHandler = async (
           orderBy: {
             created_at: "desc"
           },
+          distinct: "url",
           take: 20
         }),
         prisma.google_daily.findMany({
@@ -36,6 +37,7 @@ export const searchHandler = async (
           orderBy: {
             created_at: "desc"
           },
+          distinct: "url",
           take: 20
         }),
         prisma.youtube.findMany({
@@ -58,6 +60,7 @@ export const searchHandler = async (
           orderBy: {
             created_at: "desc"
           },
+          distinct: "url",
           take: 20
         })
       ]);
@@ -83,6 +86,7 @@ export const searchHandler = async (
         orderBy: {
           created_at: "desc"
         },
+        distinct: "url",
         take: 20
       }),
       prisma.google_daily.findMany({
@@ -94,6 +98,7 @@ export const searchHandler = async (
         orderBy: {
           created_at: "desc"
         },
+        distinct: "url",
         take: 20
       }),
       prisma.youtube.findMany({
@@ -120,6 +125,7 @@ export const searchHandler = async (
         orderBy: {
           created_at: "desc"
         },
+        distinct: "url",
         take: 20
       })
     ]);

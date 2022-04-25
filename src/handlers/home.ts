@@ -34,6 +34,7 @@ export const homeHandler = async (
         where: {
           country: isAvailable.google_realtime === "true" ? country : "US"
         },
+        distinct: "url",
         orderBy: {
           created_at: "desc"
         },
@@ -42,6 +43,7 @@ export const homeHandler = async (
         where: {
           country: isAvailable.google_daily === "true" ? country : "US"
         },
+        distinct: "url",
         orderBy: {
           created_at: "desc"
         },
@@ -62,6 +64,7 @@ export const homeHandler = async (
         where: {
           country: isAvailable.duckduckgo === "true" ? country : "US"
         },
+        distinct: "url",
         orderBy: {
           created_at: "desc"
         },
