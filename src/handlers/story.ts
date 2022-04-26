@@ -1,6 +1,7 @@
-import axios from "axios";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Request, Response } from "express";
 import { getPrismaClient } from "../client";
+import { websiteHandler } from "./website";
 const prisma = getPrismaClient();
 
 const getRelatedData = async (title: string) => {
@@ -94,12 +95,13 @@ export const storyHandler = async (
           return;
         }
         const [website, related] = await Promise.all([
-          axios.get(`https://google.trendscads.com/website?link=${article.url}`),
+          websiteHandler(article.url),
           getRelatedData(article.title)
         ]);
 
         res.status(200).json({
-          result: website.data.result.websiteData,
+          //@ts-ignore
+          result: website.websiteData,
           related
         });
         break;
@@ -112,12 +114,13 @@ export const storyHandler = async (
           return;
         }
         const [website, related] = await Promise.all([
-          axios.get(`https://google.trendscads.com/website?link=${search.url}`),
+          websiteHandler(search.url),
           getRelatedData(search.title)
         ]);
 
         res.status(200).json({
-          result: website.data.result.websiteData,
+          //@ts-ignore
+          result: website.websiteData ,
           related
         });
         break;
