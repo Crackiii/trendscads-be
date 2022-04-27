@@ -14,7 +14,7 @@ services:
         - 8086:3000
   # - elasticsearch service
   elasticsearch:
-    image: elasticsearch:latest
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.1
     environment:
       discovery.type: "single-node"
       bootstrap.memory_lock: "true"
@@ -31,7 +31,7 @@ services:
         hard: -1
   # - kibana service
   kibana:
-    image: kibana:latest
+    image: docker.elastic.co/kibana/kibana:7.14.1
     environment:
       ELASTICSEARCH_URL: "http://elasticsearch:9200"
       KIBANA_INDEX: ".kibana"
