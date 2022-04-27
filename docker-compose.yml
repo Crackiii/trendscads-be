@@ -1,0 +1,42 @@
+version: "3.7"
+
+services:
+  # - browserless service
+  browserless:
+    image: browserless/chrome:latest
+    container_name: "browserless"
+    environment:
+      - DEBUG=browserless/chrome
+      - MAX_CONCURRENT_SESSIONS=100
+      - PREBOOT_CHROME=true
+      - KEEP_ALIVE=true
+    ports:
+        - 8086:3000
+  # - elasticsearch service
+  elasticsearch:
+    image: elasticsearch:latest
+    environment:
+      discovery.type: "single-node"
+      bootstrap.memory_lock: "true"
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+  # - kibana service
+  kibana:
+    image: kibana:latest
+    environment:
+      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      KIBANA_INDEX: ".kibana"
+    ports:
+      - 5601:5601
+
+volumes:
+  elasticsearch-data: {}
