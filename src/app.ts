@@ -17,7 +17,7 @@ app.use(function (_: Request, res: Response, next: () => void) {
   next();
 });
 
-
+//something new
 app.get("/", (_, res) => res.status(200).send("<h1>[Trendscads Backend] app running...</h1>"));
 app.get("/health", (_, res) => res.status(200).send("Health check works"));
 
